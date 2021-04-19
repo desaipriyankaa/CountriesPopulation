@@ -14,18 +14,18 @@ namespace CountriesPopulation
             this._csvFilePath = csvFilePath;
         }
 
-        public Country[] ReadFirstNCountries(int nCountries)
+        public List<Country> ReadAllCountries()
         {
-            Country[] countries = new Country[nCountries];
+            List<Country> countries = new List<Country>();
 
             using (StreamReader sr = new StreamReader(_csvFilePath))
             {
                 sr.ReadLine();
 
-                for (int i = 0; i < nCountries; i++)
-                {
-                    string csvLine = sr.ReadLine();
-                    countries[i] = ReadCountryFromCsvLine(csvLine);
+                string csvLine;
+                while((csvLine = sr.ReadLine()) != null)
+                { 
+                    countries.Add(ReadCountryFromCsvLine(csvLine));
                 }
             }
                 return countries;
@@ -33,12 +33,32 @@ namespace CountriesPopulation
 
         public Country ReadCountryFromCsvLine(string csvLine)
         {
-            string[] parts = csvLine.Split(new char[] { ',' });
+            string[] parts = csvLine.Split( ',' );
 
-            string name = parts[0];
-            string code = parts[1];
-            int population = int.Parse(parts[2]);
+            string name;
+            string code;
+            string popText;
 
+            switch (parts.Length)
+            {
+                case 3:
+                    name = parts[0];
+                    code = parts[1];
+                    popText = parts[2];
+                    break;
+
+                case 4:
+                    name = parts[0] + ", " + parts[1];
+                    name = name.Replace("\"", null).Trim();
+                    code = parts[2];
+                    popText = parts[3];
+                    break;
+
+                default:
+                    throw new Exception($"Can't parse country from csvLine : {csvLine}");
+
+            }
+            int.TryParse(popText,out int population);
             return new Country(name, code, population);
         }
     }

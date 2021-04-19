@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace CountriesPopulation
 {
@@ -10,13 +11,14 @@ namespace CountriesPopulation
 
             CsvReader reader = new CsvReader(filePath);
 
-            Country[] countries = reader.ReadFirstNCountries(10);
+            List<Country> countries = reader.ReadAllCountries();
                                                       
             foreach(Country country in countries)
             {
 
                 Console.WriteLine($"{country.Population} : {country.Name}");
             }
+            Console.WriteLine($"\n{countries.Count} countries");
 
         }
     }
