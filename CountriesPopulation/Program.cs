@@ -11,13 +11,17 @@ namespace CountriesPopulation
 
             CsvReader reader = new CsvReader(filePath);
 
-            List<Country> countries = reader.ReadAllCountries();
-                                                      
-            foreach(Country country in countries)
-            {
+            Dictionary<string, Country> countries = reader.ReadAllCountries();
 
-                Console.WriteLine($"{country.Population} : {country.Name}");
-            }
+            Console.WriteLine("Which country code you want to look up? ");
+            string userInput = Console.ReadLine();
+
+            bool gotCountry = countries.TryGetValue(userInput, out Country country);
+            if (!gotCountry)
+                Console.WriteLine($"Sorry there is no country with code : {userInput}");
+            else
+                Console.WriteLine($"{country.Name} has population {country.Population}");
+
             Console.WriteLine($"\n{countries.Count} countries");
 
         }
